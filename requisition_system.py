@@ -59,6 +59,26 @@ class Requisition:
             print("Invalid decision. Requisition remains pending.")
 
         return self.status
+
+    def display_requisitions(self):
+        print("\n-----------------------------")
+        print("PURCHASE REQUISITION DETAILS")
+        print("-----------------------------")
+
+        print("Date:", self.date)
+        print("Requisition ID:", self.requisition_id)
+        print("Staff ID:", self.staff_id)
+        print("Staff Name:", self.staff_name)
+        print(f"Total: ${self.total:.2f}")
+        print("Status:", self.status)
+
+        if self.approval_reference:
+            print("Approval Reference Number:",
+                self.approval_reference)
+        else:
+            print("Approval Reference Number: Not available")
+
+        print("-----------------------------")
     
 
     
@@ -96,3 +116,7 @@ request2.respond_requisition("Approved")
 
 print("After Manager Decision:", request2.status)
 print("Approval Reference:", request2.approval_reference)
+
+# Display requisition details
+request1.display_requisitions()
+request2.display_requisitions()
