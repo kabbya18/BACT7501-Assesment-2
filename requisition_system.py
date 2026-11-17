@@ -2,13 +2,15 @@
 #Purchase Requisition System
 #Initial project setup
 
-
+requisition_counter = 10000
 class Requisition:
     def __init__(self, date, staff_id, staff_name):
         self.date = date
         self.staff_id = staff_id
         self.staff_name = staff_name
-        self.requisition_id = None
+        global requisition_counter
+        requisition_counter += 1
+        self.requisition_id = requisition_counter
         self.items = []
         self.total = 0
         self.status = "Pending"
@@ -31,9 +33,8 @@ class Requisition:
     def approve_requisition(self):
         if self.total < 500:
             self.status = "Approved"
-            self.approval_reference = (
-                self.staff_id + str(self.requisition_id)
-            )
+            last_three = str(self.requisition_id)[-3:]
+            self.approval_reference = self.staff_id + last_three
         else:
             self.status = "Pending"
             self.approval_reference = ""
@@ -47,9 +48,8 @@ class Requisition:
 
         if decision == "Approved":
             self.status = "Approved"
-            self.approval_reference = (
-                self.staff_id + str(self.requisition_id)
-            )
+            last_three = str(self.requisition_id)[-3:]
+            self.approval_reference = self.staff_id + last_three
 
         elif decision == "Not approved":
             self.status = "Not approved"
@@ -79,7 +79,28 @@ class Requisition:
             print("Approval Reference Number: Not available")
 
         print("-----------------------------")
-    
+
+    def requisition_statistics(self, requisitions):
+        total = len(requisitions)
+        approved = 0
+        pending = 0
+        not_approved = 0
+
+        for requisition in requisitions:
+            if requisition.status == "Approved":
+                approved += 1
+            elif requisition.status == "Pending":
+                pending += 1
+            elif requisition.status == "Not approved":
+                not_approved += 1
+
+        print("\nREQUISITION STATISTICS")
+        print("Total Requisitions:", total)
+        print("Approved:", approved)
+        print("Pending:", pending)
+        print("Not Approved:", not_approved)
+
+        return total, approved, pending, not_approved
 
     
 
@@ -96,7 +117,7 @@ print("Staff Name:", request1.staff_name)
 print("Staff ID:", request1.staff_id)
 print("Status:", request1.status)
 
-request1.requisition_id = 10001
+
 
 request1.approve_requisition()
 
@@ -105,7 +126,7 @@ print("Approval Status:", request1.status)
 print("Approval Reference:", request1.approval_reference)
 
 request2 = Requisition("17/11/2026", "FN20", "Tracy Brown")
-request2.requisition_id = 10002
+
 
 request2.add_requisition("Laptop", 1000)
 request2.approve_requisition()
@@ -117,6 +138,60 @@ request2.respond_requisition("Approved")
 print("After Manager Decision:", request2.status)
 print("Approval Reference:", request2.approval_reference)
 
-# Display requisition details
+
 request1.display_requisitions()
 request2.display_requisitions()
+
+
+request3 = Requisition("17/11/2026", "FN21", "Sarah Lee")
+
+request3.add_requisition("Printer", 800)
+request3.approve_requisition()
+request3.respond_requisition("Not approved")
+
+
+request4 = Requisition("17/11/2026", "FN22", "David Kim")
+
+request4.add_requisition("Office Chair", 300)
+request4.approve_requisition()
+
+
+request5 = Requisition("17/11/2026", "FN23", "Emma Wilson")
+
+request5.add_requisition("Projector", 1500)
+request5.approve_requisition()
+
+all_requisitions = [
+    request1,
+    request2,
+    request3,
+    request4,
+    request5
+]
+request1.requisition_statistics(all_requisitions)
+
+
+
+print("\nFINAL REQUISITION RESULTS")
+
+for request in all_requisitions:
+    request.display_requisitions()
+
+print("\nFINAL STATISTICS")
+request1.requisition_statistics(all_requisitions)
+
+print("\nCHECKING REQUISITION IDS")
+
+for request in all_requisitions:
+    print(request.requisition_id)
+
+print("\nCHECKING APPROVAL REFERENCES")
+
+for request in all_requisitions:
+    print(
+        request.requisition_id,
+        request.status,
+        request.approval_reference
+    )
+
+request1.requisition_statistics(all_requisitions)
